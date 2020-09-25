@@ -34,14 +34,29 @@ class Product extends React.Component {
     tempProducts.sort((a,b) => {
       return b.price - a.price;
     });
+    this.setState({
+      products: tempProducts,
+    });
+  }
+
+  deleteProduct(index){
+    let tempProducts = this.state.products;
+    tempProducts.splice(index,1);
+    this.setState({
+      products: tempProducts,
+    });
   }
   
   render(){
     return (
       <div>
+        <h2>Excersice 3</h2>
         <ul>
           {this.state.products.map((product) => (
-            <Productinfo key={product.id} product = {product} />
+            <Productinfo
+            key={product.id} 
+            product = {product}
+            klick= {() => this.deleteProduct(index)} />
           ))}
         </ul>
         <button onClick={() => this.sortProducts()}>
@@ -56,6 +71,7 @@ function Productinfo(props) {
       <article className="produkt">
           <h3>{props.product.name}</h3>
           <p>{props.product.price} inkl moms</p>
+          <button onClick={() => props.klick()}> Ta bort</button>
       </article>
   );
 }
