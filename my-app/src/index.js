@@ -2,6 +2,69 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
+
+// exc 3
+class Product extends React.Component {
+  constructor(){
+    super();
+    this.state = {
+      products: [
+        {
+          id: 2,
+        name: "Hammare B2",
+        price: 123,
+        },
+        {
+          id: 3,
+        name: "Fisk B14",
+        price: 124,
+        },
+        {
+          id: 4,
+        name: "Bread 23",
+        price: 87,
+        },
+        
+      ],
+    };
+  
+  }
+  sortProducts(){
+    let tempProducts = this.state.products;
+    tempProducts.sort((a,b) => {
+      return b.price - a.price;
+    });
+  }
+  
+  render(){
+    return (
+      <div>
+        <ul>
+          {this.state.products.map((product) => (
+            <Productinfo key={product.id} product = {product} />
+          ))}
+        </ul>
+        <button onClick={() => this.sortProducts()}>
+          Sortera efter pris
+        </button>
+      </div>
+    );
+  }
+}
+function Productinfo(props) {
+  return (
+      <article className="produkt">
+          <h3>{props.product.name}</h3>
+          <p>{props.product.price} inkl moms</p>
+      </article>
+  );
+}
+ReactDOM.render(<Product />, document.getElementById('root'));
+
+
+
+
+/* exc 2
 class Citylister extends React.Component {
   constructor(){
     super();
@@ -40,4 +103,4 @@ function ShowMoney(props){
   return <p>{props.money -5}</p>
 }
 
-ReactDOM.render(<Citylister />, document.getElementById('root'));
+ReactDOM.render(<Citylister />, document.getElementById('root')); */
