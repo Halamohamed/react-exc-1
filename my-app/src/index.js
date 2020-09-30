@@ -1,59 +1,68 @@
 import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
+import axios from "axios";
 
-function FirstName(props){
-    let [fname, setFname]= useState(props.fname);
-    const [count, setCount] = useState(0);
-    const onSubmit = (e) => {
-        e.preventDefault();
-        setFname(e.target.fname.value);
-    }
-    const nameChanger = (e) => {
-        if (e.target.value.length > 3) {
-            fname = e.target.value;
-            setFname(e.target.value);
-        }
-    };
-    useEffect(() => {
-        document.title = `You clicked ${count} times`;
-        }, [count]); // Only re-run the effect if count changes
+
+function Country(){
+    const [land, setLand]= useState([]);
+    const [load, setLoad] = useState(false);
+    const [error, setError] = useState("");
+    const [counter, setCounter] = useState(0);
     
-    return ( 
-    <div>
-        <p>You clicked {count} times</p>
-        <button onClick={() => setCount(count + 1)}>
-            Click me
-        </button>
-        
-        <form onSubmit={onSubmit}>
-            
-            <input name="fname" type="text" placeholder="enter name" onChange={(e) => nameChanger(e)}/>
-            <button  >submit</button>
-        </form>
-        <p>{fname}</p>
-            
+   
+    
+ 
+   
+    useEffect(() => {
+        axios
+        .get('https://restcountries.eu/rest/v2/all')
+        .then((res) => {
+            setLoad(true);
+            setLand(res.data);
+            console.log("laddar listan");
+        })
+        .catch((err) => {
+            setError(err.message);
+            setLoad(true);
+        });
+        }, []); // Only re-run the effect if cities changes
 
-        </div>
-    )
+         const sortCountries = () =>{
+            let countries = [...land];
+            countries.sort((a,b) => {
+                return b.population - a.population;
+            });
+            setLand(countries);
+            setCounter(counter +1);
+        }
+        if(load){
+            return (
+                <div>
+                    <p>Antal klick: {counter}</p>
+                    <button onClick={sortCountries}> Sortera</button>
+                    <ol>
+                        {error ? (
+                            <li>{error.message}</li>
+                        ):(
+                            land.map((country, index) =>(
+                                <li key={index}>
+                                {country.name} ({country.population})
+                                </li>
+                            ))
+                            
+                        )}
+                    </ol>
+                </div>
+            );
+        }else {
+            return <div>Laddar ...</div>
+        }
+    
+    
 
 }
 
-/*function Multiplicator() {
-    const [numbers, setNumbers] = useState([4,3]);
-    const [total, setTotal ] = useState(0);
 
-    return ( 
-        <div>
-            <p>
-                {numbers[0] }och {numbers[1]}
-            </p>
-    <p>{total}</p>
-    <button onClick={() => setTotal(numbers[0] * numbers[1])}>
-        Multiplicera
-    </button>
 
-        </div>
-    )
-}*/
-ReactDOM.render(<FirstName fname = "Hala" />, document.getElementById('root'));
+ReactDOM.render(<Country />, document.getElementById('root'));
